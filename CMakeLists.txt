@@ -13,7 +13,6 @@ cmake_minimum_required(VERSION 3.12)
 
 set(src 
    src/main.cpp
-   src/fib.cpp
  )
 
 include_directories(inc)
