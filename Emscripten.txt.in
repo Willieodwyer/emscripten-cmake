@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 2.8.2)
+
+project (emsdk-download NONE)
+
+include(ExternalProject)
+ExternalProject_Add(emsdk
+    GIT_REPOSITORY https://github.com/emscripten-core/emsdk.git
+    GIT_TAG master
+    SOURCE_DIR "${CMAKE_BINARY_DIR}/emsdk-src"
+    BINARY_DIR "${CMAKE_BINARY_DIR}/emsdk-build"
+    CONFIGURE_COMMAND "${CMAKE_BINARY_DIR}/emsdk-src/emsdk" install latest
+    BUILD_COMMAND "${CMAKE_BINARY_DIR}/emsdk-src/emsdk" activate latest
+    INSTALL_COMMAND ""
+    TEST_COMMAND ""
+)
