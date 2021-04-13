@@ -5,31 +5,44 @@
 #include <emscripten.h>
 #endif
 
+#include "mandelbrot.h"
+
 #include <vector>
+
+SDL_Surface* screen = nullptr;
+
+int counter = 0; // Start from 60 (actually generates something from there)
+
+void drawFrame() 
+{
+  printf("Iterations: %d!\n", counter);
+
+  SDL_LockSurface(screen);
+
+  mandelbrot(counter, -0.7436447860, 0.1318252536, 0.00029336);
+  counter += 10;
+
+  unsigned char* image = getImage();
+
+  for(int x = 0.0; x < WIDTH; x++) {
+    for(int y = 0.0; y < HEIGHT; y++) {
+      int idx = ((x + y * WIDTH) * 4);
+      *((Uint32*)screen->pixels + x + (y * WIDTH)) 
+      = SDL_MapRGBA(screen->format, image[idx], image[idx + 1], image[idx + 2], image[idx + 3]);
+    }
+  }
+
+  SDL_UnlockSurface(screen);
+  SDL_Flip(screen);
+}
 
 extern "C" int main(int argc, char** argv) {
   printf("hello, world!\n");
 
   SDL_Init(SDL_INIT_VIDEO);
-  SDL_Surface *screen = SDL_SetVideoMode(256, 256, 32, SDL_SWSURFACE);
+  screen = SDL_SetVideoMode(WIDTH, HEIGHT, 32, SDL_SWSURFACE);
 
-
-  if (SDL_MUSTLOCK(screen)) SDL_LockSurface(screen);
-
-  for (int i = 0; i < 256; i++) {
-    for (int j = 0; j < 256; j++) {
-      int alpha = (i+j) % 255;
-      *((Uint32*)screen->pixels + i * 256 + j) = SDL_MapRGBA(screen->format, i, j, 255-i, alpha);
-    }
-  }
-
-  if (SDL_MUSTLOCK(screen)) SDL_UnlockSurface(screen);
-  SDL_Flip(screen); 
-
-  printf("you should see a smoothly-colored square - no sharp lines but the square borders!\n");
-  printf("and here is some text that should be HTML-friendly: amp: |&| double-quote: |\"| quote: |'| less-than, greater-than, html-like tags: |<cheez></cheez>|\nanother line.\n");
-
-  SDL_Quit();
+  emscripten_set_main_loop(drawFrame, 0, 1);
 
   return 0;
 }
