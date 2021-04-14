@@ -1,3 +1,16 @@
+if (WIN32)
+    find_program(PYTHON NAMES python.exe)
+else()
+    find_program(PYTHON NAMES python)
+endif()
+
+if(NOT PYTHON)
+    message(FATAL_ERROR "Python not found - Needed for emscripten sdk.")
+else()
+    message(STATUS "Python found!")
+endif()
+
+
 # emsdk
 configure_file(Emscripten.txt.in emsdk-download/CMakeLists.txt)
 execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
