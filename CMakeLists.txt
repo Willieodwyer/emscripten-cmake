@@ -1,26 +1,25 @@
 if (WIN32)
     find_program(PYTHON NAMES python.exe)
-else()
+else ()
     find_program(PYTHON NAMES python)
-endif()
+endif ()
 
-if(NOT PYTHON)
+if (NOT PYTHON)
     message(FATAL_ERROR "Python not found - Needed for emscripten sdk.")
-else()
+else ()
     message(STATUS "Python found!")
-endif()
-
+endif ()
 
 # emsdk
 configure_file(Emscripten.txt.in emsdk-download/CMakeLists.txt)
 execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/emsdk-download" )
+        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/emsdk-download")
 execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/emsdk-download" )
+        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/emsdk-download")
 
 set(CMAKE_TOOLCHAIN_FILE "${CMAKE_BINARY_DIR}/emsdk-src/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake" CACHE PATH "toolchain file")
 
-set(project "hello")
+set(project "Mandlebrot")
 project(${project})
 cmake_minimum_required(VERSION 3.12)
 
